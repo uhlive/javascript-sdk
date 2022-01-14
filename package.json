@@ -48,7 +48,7 @@
     ".prettierrc.js"
   ],
   "devDependencies": {
-    "@babel/core": "^7.12.13",
+    "@babel/core": "^7.16.7",
     "@ts-engine/cli": "^1.11.0",
     "@ts-engine/eslint-config": "^1.11.0",
     "@types/jest": "^26.0.20",
