@@ -124,7 +124,6 @@ export class Conversation {
      *     .join("my-conversation")
      *     .isRecording(); // true
      * ```
-     *
      * @example
      * ```js
      * const uhlive = new Uhlive("my-token");
