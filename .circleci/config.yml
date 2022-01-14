@@ -1,0 +1,91 @@
+version: 2.1
+
+defaults: &defaults
+    working_directory: ~/js-sdk
+    docker:
+      - image: circleci/node:16.13.1
+
+commands:
+  install-dependencies:
+    description: Install npm dependencies
+    steps:
+      - restore_cache:
+          key: dependencies-cache-v1-{{ checksum "package.json" }}-{{checksum "package-lock.json" }}
+
+      - run:
+          name: Install npm packages
+          command: "[ ! -d node_modules ] && npm ci --loglevel warn --yes || echo package.json and package-lock.json unchanged. Using cache."
+
+      - save_cache:
+          key: dependencies-cache-v1-{{ checksum "package.json" }}-{{checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+
+jobs:
+  test_and_build:
+    <<: *defaults
+    steps:
+      - checkout
+
+      - attach_workspace:
+          at: ~/js-sdk
+
+      - install-dependencies
+
+      - run:
+          name: Run linter
+          command: npm run lint
+
+      - run:
+          name: Run type checks
+          command: npm run typecheck
+
+      - run:
+          name: Run tests
+          command: npm test
+
+      - run:
+          name: Update can-i-use db
+          command: npx browserslist@latest --update-db -y
+
+      - run:
+          name: Build module
+          command: npm run build
+
+      - run:
+          name: Generate documentation
+          command: npm run doc
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  publish:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/js-sdk
+
+      - run:
+          name: Authenticate with registry
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/js-sdk/.npmrc
+
+      - run:
+          name: Publish package
+          command: npm publish --access public
+
+workflows:
+  version: 2
+  build_test_deploy:
+    jobs:
+      - test_and_build
+      - publish:
+          requires:
+            - test_and_build
+          context:
+            - npm
+          filters:
+            branches:
+              only:
+                - production

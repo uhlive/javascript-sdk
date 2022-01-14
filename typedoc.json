@@ -1,0 +1,17 @@
+{
+  "inputFiles": ["./src/main.ts", "./src/conversation.ts", "./src/types/"],
+  "mode": "file",
+  "exclude": [
+    "./__mocks__/**/*",
+    "./src/recorder.ts",
+    "./src/types/recorder.ts"
+  ],
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeExternals": true,
+  "excludeNotExported": true,
+  "readme": "none",
+  "hideGenerator": true,
+  "includeVersion": true,
+  "disableSources": true
+}

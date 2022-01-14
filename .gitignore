@@ -1,0 +1,14 @@
+*.log
+coverage
+**/dist
+*.raw
+.cache
+.DS_Store
+.env
+coverage
+js
+lib
+node_modules
+**/false
+/doc
+settings.js
