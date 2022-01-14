@@ -1,5 +1,7 @@
 # Uh!ive JS SDK
 
+[![CircleCI](https://circleci.com/gh/uhlive/javascript-sdk/tree/production.svg?style=svg)](https://circleci.com/gh/uhlive/javascript-sdk/tree/production)
+
 The uh!ive JS SDK provides convenient access to the uh!ive API from applications written in the JavaScript language. Only browsers are supported, not Node.js applications.
 
 Read the [documentation for the Conversation API](https://docs.allo-media.net/live-api/) and [for the Recognition API (vocal bot toolkit)](https://docs.allo-media.net/stream-api-bots/).
