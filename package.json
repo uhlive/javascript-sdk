@@ -51,7 +51,7 @@
     "@babel/core": "^7.16.7",
     "@ts-engine/cli": "^1.11.0",
     "@ts-engine/eslint-config": "^1.11.0",
-    "@types/jest": "^26.0.20",
+    "@types/jest": "^27.4.0",
     "babel-plugin-transform-html-import-to-string": "0.0.1",
     "conditional-type-checks": "^1.0.5",
     "eslint-plugin-import": "^2.22.1",
