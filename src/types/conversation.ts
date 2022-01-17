@@ -307,3 +307,47 @@ export interface SegmentDecoded extends Decoding {
      */
     words: SegmentDecodedWord[];
 }
+
+export interface TagsFound {
+    /**
+     * Annotation to the tag.
+     */
+     annotation: TagAnnotation;
+     /**
+      * Confidence score between 0.0 and 1.0.
+      */
+     confidence: number;
+     /**
+      * Country where the speaker is (2 letters ISO 3166-1 code).
+      */
+     country: string;
+     /**
+      * Timestamp of the end of the entity, in milliseconds.
+      */
+     end: number;
+     /**
+      * Lang of the entity.
+      */
+     lang: string;
+     /**
+      * Length of the entity, in milliseconds.
+      */
+     length: number;
+     /**
+      * The id of the speaker.
+      */
+     speaker: string;
+     /**
+      * Timestamp of the start of the entity, in milliseconds.
+      */
+     start: number;
+}
+
+export interface TagAnnotation {
+    tags: Tag[];
+}
+
+export interface Tag {
+    label: string;
+    uuid: string;
+}
