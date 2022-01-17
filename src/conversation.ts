@@ -332,7 +332,7 @@ export class Conversation {
     }
 
     /**
-     * The `tags_found` event is triggered when a tag is found for the current conversation
+     * The `tags_found` event is triggered when a tag is found for the current conversation.
      *
      * @category Events
      *
