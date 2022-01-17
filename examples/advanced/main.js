@@ -16,7 +16,7 @@ document.getElementById("join").addEventListener("click", () => {
         })
         .onEntityFound("*", (entity) => {
             console.log("Entity found", entity);
-        });;
+        });
 });
 
 document.getElementById("leave").addEventListener("click", () => {
