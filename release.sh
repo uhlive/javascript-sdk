@@ -32,6 +32,10 @@ npm run doc
 echo "### Merge master to production"
 git merge master production
 
+echo "### Update package version in examples"
+OLD_VERSION=$(cat VERSION)
+sed -i "s/\"@uhlive\/javascript-sdk\": \"^$OLD_VERSION\"/\"@uhlive\/javascript-sdk\": \"^$VERSION\"/" examples/**/package.json
+
 echo "### Update VERSION to $1"
 echo "$1" > VERSION
 
@@ -48,6 +52,7 @@ git merge production master
 echo "### Set development version"
 DEV_VERSION="$VERSION-dev"
 echo "$DEV_VERSION" > VERSION
+sed -i "s/\"@uhlive\/javascript-sdk\": \"^$VERSION\"/\"@uhlive\/javascript-sdk\": \"^$DEV_VERSION\"/" examples/**/package.json
 npm version "$DEV_VERSION"
 git push
 
