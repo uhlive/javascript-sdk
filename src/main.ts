@@ -111,7 +111,6 @@ export class Uhlive {
      * });
      * uhlive.disconnect();
      * ```
-     *
      * @example
      * ```js
      * const uhlive = new Uhlive("my-identifier", "my-token");
