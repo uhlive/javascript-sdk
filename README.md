@@ -36,7 +36,7 @@ Start the example:
 
 ```text
 cd ./examples/basic/
-npm ci
+npm i
 npm run dev
 ```
 
