@@ -360,8 +360,8 @@ export class Conversation {
      * conversation.publish("my-event", {payload: "bob"});
      * ```
      */
-    public publish(eventName: string, payload?: any, context?: any) {
-        this.pubsub.publish(eventName, payload, context);
+    public publish(eventName: string, ...args: unknown[]) {
+        this.pubsub.publish(eventName, ...args);
     }
 
     private addEntityToMessage(entity: Entity, entityType: EntityEvent) {

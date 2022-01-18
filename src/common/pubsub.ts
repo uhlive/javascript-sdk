@@ -1,15 +1,13 @@
 export default class Pubsub {
     private events: Map<string, Array<Function>> = new Map();
 
-    public publish(eventName: string, data?: any, context?: any) {
+    public publish(eventName: string, ...args: unknown[]) {
         if (this.events.has(eventName)) {
             this.events.get(eventName)?.forEach((cb) => {
-                if (data && context) {
-                    cb(data, context);
-                } else if (data) {
-                    cb(data);
+                if (eventName.startsWith("entity_")) {
+                    cb(...args, eventName);
                 } else {
-                    cb();
+                    cb(...args);
                 }
             });
         }
