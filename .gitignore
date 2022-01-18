@@ -12,4 +12,5 @@ node_modules
 **/false
 /doc
 settings.js
+dev/**/package-lock.json
 examples/**/package-lock.json
