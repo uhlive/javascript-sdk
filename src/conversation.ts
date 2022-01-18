@@ -4,15 +4,16 @@ import Recorder from "./recorder";
 import {
     ConversationOptions,
     DecodingEvent,
+    EntitiesRelationEvent,
     Entity,
     EntityEvent,
     EntityRef,
     SegmentDecoded,
     SegmentDecodedWord,
-    SpeakerLeft,
     SpeakerJoined,
+    SpeakerLeft,
+    TagsFound,
     WordsDecoded,
-    EntitiesRelationEvent,
 } from "./types/conversation";
 
 export class Conversation {
@@ -325,6 +326,26 @@ export class Conversation {
         callback: (payload: SpeakerLeft) => void,
     ): Conversation {
         this.pubsub.subscribe("speaker_left", callback);
+
+        return this;
+    }
+
+    /**
+     * The `tags_found` event is triggered when a tag is found for the current conversation.
+     *
+     * @category Events
+     *
+     * @example
+     * ```js
+     * const uhlive = new Uhlive("my-token");
+     * const myConversation = uhlive.join("my-conversation");
+     * myConversation.onWordsDecoded((transcript) => {
+     *     // Do something with `transcript`...
+     * });
+     * ```
+     */
+    public onTagsFound(callback: (payload: TagsFound) => void): Conversation {
+        this.pubsub.subscribe("tags_found", callback);
 
         return this;
     }

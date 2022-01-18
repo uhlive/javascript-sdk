@@ -140,7 +140,6 @@ describe("Conversation", () => {
     it("should execute callback if event 'segment_decoded' is triggered", () => {
         const cb = jest.fn();
         expect(conversation.onSegmentDecoded(cb)).toBeInstanceOf(Conversation);
-        // pubsub.publish(`segment_decoded`);
         conversation.publish("segment_decoded", { speaker: "me" });
         expect(cb).toHaveBeenCalledTimes(1);
     });
@@ -163,6 +162,13 @@ describe("Conversation", () => {
         const cb = jest.fn();
         expect(conversation.onWordsDecoded(cb)).toBeInstanceOf(Conversation);
         conversation.publish(`words_decoded`, { speaker: "me" });
+        expect(cb).toHaveBeenCalledTimes(1);
+    });
+
+    it("should execute callback if event 'tags_found' is triggered", () => {
+        const cb = jest.fn();
+        expect(conversation.onTagsFound(cb)).toBeInstanceOf(Conversation);
+        conversation.publish(`tags_found`, { speaker: "me" });
         expect(cb).toHaveBeenCalledTimes(1);
     });
 });
