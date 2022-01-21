@@ -223,8 +223,8 @@ export class Uhlive {
      */
     public leaveAllConversations(): Promise<void[]> {
         const conversationsLeft: Promise<void>[] = [];
-        this.conversations.forEach((conversation) => {
-            conversationsLeft.push(conversation.leave());
+        this.conversations.forEach((_, key) => {
+            conversationsLeft.push(this.leave(key));
         });
         return Promise.all(conversationsLeft);
     }

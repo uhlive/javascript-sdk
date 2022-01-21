@@ -29,6 +29,12 @@ document.getElementById("join").addEventListener("click", () => {
 });
 
 document.getElementById("leave").addEventListener("click", () => {
+  uhlive.leave("my-conversation-id").then(() => {
+    console.log("dev.conversation_left");
+  });
+});
+
+document.getElementById("leave-all").addEventListener("click", () => {
   uhlive.leaveAllConversations().then(() => {
     console.log("dev.all_conversations_left");
   });
