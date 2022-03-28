@@ -115,6 +115,19 @@ export class Conversation {
     }
 
     /**
+     * Get the id of the conversation.
+     *
+     * @example
+     * ```js
+     * const conversation = new Conversation("1234", "Bob", socket, options);
+     * conversation.getId(); // returns "1234"
+     * ```
+     */
+    public getId(): string {
+        return this.conversationId;
+    }
+
+    /**
      * Get the recording status of the conversation.
      *
      * @category Recording
@@ -334,7 +347,6 @@ export class Conversation {
      * The `tags_found` event is triggered when a tag is found for the current conversation.
      *
      * @category Events
-     *
      * @example
      * ```js
      * const uhlive = new Uhlive("my-token");

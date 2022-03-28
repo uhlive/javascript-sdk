@@ -46,22 +46,21 @@ describe("Uhlive", () => {
         uhlive.connect();
         const conversation = uhlive.join("test", { readonly: true });
         expect(conversation).toBeInstanceOf(Conversation);
-        expect(uhlive.conversations.size).toEqual(1);
+        expect(uhlive.getConversation).not.toBeNull();
 
         // @ts-ignore
         // eslint-disable-next-line import/namespace
         expect(Phoenix.mockPhoenixChannelJoin).toHaveBeenCalledTimes(1);
     });
 
-    it("should return the same conversation if already joined", () => {
+    it("should throw if already joined a conversation", () => {
         const uhlive = new Uhlive("my-identifier", "my-token");
         uhlive.connect();
         const conversation1 = uhlive.join("test", { readonly: true });
-        const conversation2 = uhlive.join("test", { readonly: true });
-        expect(console.warn).toHaveBeenCalled();
         expect(conversation1).toBeInstanceOf(Conversation);
-        expect(conversation1).toStrictEqual(conversation2);
-        expect(uhlive.conversations.size).toEqual(1);
+        expect(() => uhlive.join("test2", { readonly: true })).toThrow(
+            "You already joined a conversation. Open a new connection to create or join a new conversation.",
+        );
 
         // @ts-ignore
         // eslint-disable-next-line import/namespace
@@ -72,7 +71,7 @@ describe("Uhlive", () => {
         const uhlive = new Uhlive("my-identifier", "my-token");
         uhlive.connect();
         uhlive.join("test", { readonly: true });
-        uhlive.leave("test");
+        uhlive.leave();
 
         // @ts-ignore
         // eslint-disable-next-line import/namespace
@@ -85,14 +84,14 @@ describe("Uhlive", () => {
         // @ts-ignore
         // eslint-disable-next-line import/namespace
         expect(Phoenix.mockPhoenixChannelLeave).toHaveBeenCalledTimes(1);
+        // expect(uhlive.getConversation).toBeNull();
     });
 
     it("should return false if the conversation doesn't exist", async () => {
         const uhlive = new Uhlive("my-identifier", "my-token");
         uhlive.connect();
-        uhlive.join("test", { readonly: true });
-        await expect(uhlive.leave("test2")).rejects.toEqual(
-            'Unknown conversationId "test2".',
+        await expect(uhlive.leave()).rejects.toEqual(
+            "You must join a conversation before leaving it.",
         );
     });
 
@@ -100,8 +99,12 @@ describe("Uhlive", () => {
         const uhlive = new Uhlive("my-identifier", "my-token");
         uhlive.connect();
         uhlive.join("test1", { readonly: true });
-        uhlive.join("test2", { readonly: true });
+        expect(() => uhlive.join("test2", { readonly: true })).toThrow(
+            "You already joined a conversation. Open a new connection to create or join a new conversation.",
+        );
         uhlive.leaveAllConversations();
+
+        expect(console.warn).toHaveBeenCalled();
 
         // @ts-ignore
         // eslint-disable-next-line import/namespace
@@ -109,11 +112,11 @@ describe("Uhlive", () => {
 
         // @ts-ignore
         // eslint-disable-next-line import/namespace
-        expect(Phoenix.mockPhoenixChannelJoin).toHaveBeenCalledTimes(2);
+        expect(Phoenix.mockPhoenixChannelJoin).toHaveBeenCalledTimes(1);
 
         // @ts-ignore
         // eslint-disable-next-line import/namespace
-        expect(Phoenix.mockPhoenixChannelLeave).toHaveBeenCalledTimes(2);
+        expect(Phoenix.mockPhoenixChannelLeave).toHaveBeenCalledTimes(1);
     });
 
     it("should start recording the conversation when joined", () => {
