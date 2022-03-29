@@ -19,12 +19,6 @@ document.getElementById("join").addEventListener("click", () => {
         });
 });
 
-document.getElementById("leave").addEventListener("click", () => {
-    uhlive.leaveAllConversations().then(() => {
-        console.log("All conversations left!");
-    });
-});
-
 document.getElementById("disconnect").addEventListener("click", (payload) => {
     uhlive.disconnect().then(() => {
         console.log("Disconnected!");

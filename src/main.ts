@@ -5,7 +5,7 @@ import { ConversationOptions } from "./types/conversation";
 import { UhliveOptions } from "./types/uhlive";
 
 export class Uhlive {
-    public readonly conversations: Map<string, Conversation> = new Map();
+    private conversation: Conversation | null = null;
     private identifier: string;
     private options: UhliveOptions = {
         timeout: 3,
@@ -52,11 +52,11 @@ export class Uhlive {
                 const conversationId = args[0].topic.split("@")[1];
                 const payload = args[0].payload;
 
-                const existingConversation = this.conversations.get(
-                    conversationId,
-                );
-                if (existingConversation) {
-                    existingConversation.publish(eventName, payload);
+                if (
+                    this.conversation &&
+                    this.conversation.getId == conversationId
+                ) {
+                    this.conversation.publish(eventName, payload);
                 }
             }
         });
@@ -89,14 +89,36 @@ export class Uhlive {
      * });
      * ```
      */
-    public disconnect(): Promise<void> {
-        return this.leaveAllConversations().then(() => {
+    public async disconnect(): Promise<void> {
+        if (this.conversation) {
+            await this.conversation.leave();
+            return await new Promise<void>((resolve) => {
+                this.socket.disconnect(() => {
+                    resolve();
+                });
+            });
+        } else {
             return new Promise<void>((resolve) => {
                 this.socket.disconnect(() => {
                     resolve();
                 });
             });
-        });
+        }
+    }
+
+    /**
+     * Return the current conversation.
+     *
+     * @example
+     * ```js
+     * const uhlive = new Uhlive("my-identifier", "my-token");
+     * uhlive.connect();
+     * const conversation = uhlive.getConversation();
+     * console.log(conversation);
+     * ```
+     */
+    public getConversation(): Conversation | null {
+        return this.conversation;
     }
 
     /**
@@ -155,12 +177,10 @@ export class Uhlive {
             ...options,
         };
 
-        const existingConversation = this.conversations.get(conversationId);
-        if (existingConversation) {
-            console.warn(
-                `You already joined conversation "${conversationId}".`,
+        if (this.conversation) {
+            throw new Error(
+                "You already joined a conversation. Open a new connection to create or join a new conversation.",
             );
-            return existingConversation;
         }
 
         const conversation = new Conversation(
@@ -170,7 +190,7 @@ export class Uhlive {
             newOptions,
         );
 
-        this.conversations.set(conversationId, conversation);
+        this.conversation = conversation;
         return conversation;
     }
 
@@ -182,24 +202,21 @@ export class Uhlive {
      * const uhlive = new Uhlive("my-identifier", "my-token");
      * uhlive.connect();
      * uhlive.join("my-conversation");
-     * uhlive.leave("my-conversation").then(() => {
+     * uhlive.leave().then(() => {
      *     console.log("You left the conversation");
      * }).catch((err) => {
      *     console.error("Error:", err);
      * });
      * ```
      */
-    public leave(conversationId: string): Promise<void> {
-        if (this.conversations.has(conversationId)) {
-            return this.conversations
-                .get(conversationId)!
-                .leave()
-                .then(() => {
-                    this.conversations.delete(conversationId);
-                });
+    public leave(): Promise<void> {
+        if (this.conversation) {
+            return this.conversation.leave().then(() => {
+                this.conversation = null;
+            });
         } else {
             return new Promise((_resolve, reject) =>
-                reject(`Unknown conversationId "${conversationId}".`),
+                reject("You must join a conversation before leaving it."),
             );
         }
     }
@@ -207,6 +224,7 @@ export class Uhlive {
     /**
      * Leave all conversations at once.
      *
+     * @deprecated
      * @example
      * ```js
      * const uhlive = new Uhlive("my-identifier", "my-token");
@@ -222,11 +240,8 @@ export class Uhlive {
      * ```
      */
     public leaveAllConversations(): Promise<void[]> {
-        const conversationsLeft: Promise<void>[] = [];
-        this.conversations.forEach((_, key) => {
-            conversationsLeft.push(this.leave(key));
-        });
-        return Promise.all(conversationsLeft);
+        console.warn("This function is deprecated and will be removed soon.");
+        return Promise.all([this.leave()]);
     }
 
     /**
