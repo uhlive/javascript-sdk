@@ -54,7 +54,7 @@ export class Uhlive {
 
                 if (
                     this.conversation &&
-                    this.conversation.getId == conversationId
+                    this.conversation.getId() === conversationId
                 ) {
                     this.conversation.publish(eventName, payload);
                 }
@@ -179,7 +179,7 @@ export class Uhlive {
 
         if (this.conversation) {
             throw new Error(
-                "You already joined a conversation. Open a new connection to create or join a new conversation.",
+                "You can join only one conversation per WebSocket connection. Please open a new connection to join another conversation.",
             );
         }
 
