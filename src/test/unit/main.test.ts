@@ -59,7 +59,7 @@ describe("Uhlive", () => {
         const conversation1 = uhlive.join("test", { readonly: true });
         expect(conversation1).toBeInstanceOf(Conversation);
         expect(() => uhlive.join("test2", { readonly: true })).toThrow(
-            "You already joined a conversation. Open a new connection to create or join a new conversation.",
+            "You can join only one conversation per WebSocket connection. Please open a new connection to join another conversation.",
         );
 
         // @ts-ignore
@@ -100,7 +100,7 @@ describe("Uhlive", () => {
         uhlive.connect();
         uhlive.join("test1", { readonly: true });
         expect(() => uhlive.join("test2", { readonly: true })).toThrow(
-            "You already joined a conversation. Open a new connection to create or join a new conversation.",
+            "You can join only one conversation per WebSocket connection. Please open a new connection to join another conversation.",
         );
         uhlive.leaveAllConversations();
 
