@@ -54,7 +54,7 @@ export class Uhlive {
 
                 if (
                     this.conversation &&
-                    this.conversation.getId == conversationId
+                    this.conversation.getId() === conversationId
                 ) {
                     this.conversation.publish(eventName, payload);
                 }
