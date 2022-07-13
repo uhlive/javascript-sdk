@@ -10,6 +10,7 @@ import {
     EntityRef,
     SegmentDecoded,
     SegmentDecodedWord,
+    SegmentNormalized,
     SpeakerJoined,
     SpeakerLeft,
     TagsFound,
@@ -297,6 +298,14 @@ export class Conversation {
         callback: (transcript: SegmentDecoded) => void,
     ): Conversation {
         this.pubsub.subscribe("segment_decoded", callback);
+
+        return this;
+    }
+
+    public onSegmentNormalized(
+        callback: (transcript: SegmentNormalized) => void,
+    ): Conversation {
+        this.pubsub.subscribe("segment_normalized", callback);
 
         return this;
     }
