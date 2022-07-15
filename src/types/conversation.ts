@@ -318,15 +318,15 @@ export interface SegmentNormalized extends Decoding {
      */
     model: string;
     /**
-     * Identifies the previous utterance
-    */
-    previous_utterance_id: number | null
+     * Identifies the previous utterance.
+     */
+    previous_utterance_id: number | null;
     /**
      * The id of the speaker.
      */
     speaker: string;
     /**
-     * Segment transcript, normalized
+     * Segment transcript, normalized.
      */
     transcript: string;
     /**
