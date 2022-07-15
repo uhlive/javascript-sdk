@@ -308,6 +308,37 @@ export interface SegmentDecoded extends Decoding {
     words: SegmentDecodedWord[];
 }
 
+export interface SegmentNormalized extends Decoding {
+    /**
+     * Speech language. 2 letter ISO code.
+     */
+    lang: string;
+    /**
+     * Technical name of ASR model. You can find the list of available models [here](https://docs.allo-media.net/live-api/asr-models/#available-asr-models).
+     */
+    model: string;
+    /**
+     * Identifies the previous utterance.
+     */
+    previous_utterance_id: number | null;
+    /**
+     * The id of the speaker.
+     */
+    speaker: string;
+    /**
+     * Segment transcript, normalized.
+     */
+    transcript: string;
+    /**
+     * Identifies the utterance this event transcribes.
+     */
+    utterance_id: number;
+    /**
+     * Words decoded for the segment.
+     */
+    words: SegmentDecodedWord[];
+}
+
 export interface TagsFound {
     /**
      * Annotation to the tag.

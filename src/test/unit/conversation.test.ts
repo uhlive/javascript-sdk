@@ -171,4 +171,13 @@ describe("Conversation", () => {
         conversation.publish(`tags_found`, { speaker: "me" });
         expect(cb).toHaveBeenCalledTimes(1);
     });
+
+    it("should execute callback if event 'segment_normalized' is triggered", () => {
+        const cb = jest.fn();
+        expect(conversation.onSegmentNormalized(cb)).toBeInstanceOf(
+            Conversation,
+        );
+        conversation.publish(`segment_normalized`, { speaker: "me" });
+        expect(cb).toHaveBeenCalledTimes(1);
+    });
 });

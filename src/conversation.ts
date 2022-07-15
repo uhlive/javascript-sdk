@@ -10,6 +10,7 @@ import {
     EntityRef,
     SegmentDecoded,
     SegmentDecodedWord,
+    SegmentNormalized,
     SpeakerJoined,
     SpeakerLeft,
     TagsFound,
@@ -297,6 +298,27 @@ export class Conversation {
         callback: (transcript: SegmentDecoded) => void,
     ): Conversation {
         this.pubsub.subscribe("segment_decoded", callback);
+
+        return this;
+    }
+
+    /**
+     * The `onSegmentNormalized` event is triggered when a segment has been normalized.
+     *
+     * @category Events
+     * @example
+     * ```js
+     * const uhlive = new Uhlive("my-token");
+     * const myConversation = uhlive.join("my-conversation");
+     * myConversation.onSegmentNormalized((transcript) => {
+     *     // Do something with `transcript`...
+     * });
+     * ```
+     */
+    public onSegmentNormalized(
+        callback: (transcript: SegmentNormalized) => void,
+    ): Conversation {
+        this.pubsub.subscribe("segment_normalized", callback);
 
         return this;
     }
