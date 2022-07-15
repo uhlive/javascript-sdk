@@ -302,6 +302,19 @@ export class Conversation {
         return this;
     }
 
+    /**
+     * The `onSegmentNormalized` event is triggered when a segment has been normalized.
+     *
+     * @category Events
+     * @example
+     * ```js
+     * const uhlive = new Uhlive("my-token");
+     * const myConversation = uhlive.join("my-conversation");
+     * myConversation.onSegmentNormalized((transcript) => {
+     *     // Do something with `transcript`...
+     * });
+     * ```
+     */
     public onSegmentNormalized(
         callback: (transcript: SegmentNormalized) => void,
     ): Conversation {
