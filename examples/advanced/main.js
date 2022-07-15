@@ -14,6 +14,9 @@ document.getElementById("join").addEventListener("click", () => {
         .onSegmentDecoded((segment) => {
             console.log("Segment decoded", segment);
         })
+        .onSegmentNormalized((segment) => {
+            console.log("Segment normalized", segment);
+        })
         .onEntityFound("*", (entity) => {
             console.log("Entity found", entity);
         });
