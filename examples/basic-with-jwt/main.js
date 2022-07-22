@@ -5,9 +5,9 @@ import { identifier, url } from "./settings.js";
 window.onload = () => {
     const keycloak = new Keycloak(
         {
-            url: "https://staging-id.uh.live",
-            realm: "allo-media-dev",
-            clientId: "mission-control-dev"
+            url: "https://id.uh.live",
+            realm: "production",
+            clientId: "you-client-id"
         }
     );
     keycloak.init({
