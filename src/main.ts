@@ -33,8 +33,16 @@ export class Uhlive {
 
         this.pubsub = new Pubsub();
 
+        let params = {
+            timeout: this.options.timeout,
+        };
+
+        params = token.startsWith("SFMyNTY") // There's propably a better check to do here
+            ? { ...params, ...{ token: token } }
+            : { ...params, ...{ jwt: token } };
+
         this.socket = new phoenix.Socket(`${this.options.url}/socket`, {
-            ...{ params: { timeout: this.options.timeout, token: token } },
+            ...{ params },
             ...options,
         });
 
