@@ -1,6 +1,6 @@
 import Keycloak from "keycloak-js"
 import { Uhlive } from "@uhlive/javascript-sdk";
-import { uhliveConfig, keycloakConfig} from "./settings.js";
+import { keycloakConfig} from "./settings.js";
 
 window.onload = () => {
     const keycloak = new Keycloak(keycloakConfig);
@@ -11,7 +11,6 @@ window.onload = () => {
             const uhlive = new Uhlive({
                 identifier: keycloak.tokenParsed.azp,
                 jwtToken: keycloak.token,
-                url: uhliveConfig.url
               });
             uhlive
                 .connect()

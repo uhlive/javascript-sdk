@@ -1,5 +1,4 @@
 export const uhliveConfig = {
-    identifier: "YOUR-IDENTIFIER",
     url: "wss://preprod-api.uh.live",
 };
 export const keycloakConfig = {

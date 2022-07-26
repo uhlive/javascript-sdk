@@ -1,6 +1,3 @@
-export const uhliveConfig = {
-    identifier: "YOUR-IDENTIFIER"
-};
 export const keycloakConfig = {
     url: "https://id.uh.live",
     realm: "allo-media-production",
