@@ -17,8 +17,8 @@ export class Uhlive {
     /**
      * Create an Uhlive instance.
      * You can authenticate via two different methods:
-     * - a JWT token
-     * - *(deprecated)* an identifier and a token
+     * - a JWT token.
+     * - *(deprecated)* an identifier and a token.
      *
      * @example
      * ```js
@@ -26,7 +26,6 @@ export class Uhlive {
      *   timeout: 3,
      * });
      * ```
-     *
      * @example
      * ```js
      * const uhlive = new Uhlive("my-identifier", "my-token", {
@@ -51,7 +50,9 @@ export class Uhlive {
                 ...{ jwt: args[0].jwtToken },
             };
         } else {
-            console.warn("You're using a deprecated auth method, please authenticate with a JWT token.");
+            console.warn(
+                "You're using a deprecated auth method, please authenticate with a JWT token.",
+            );
 
             options = args[2] as UhliveOptions;
             this.options.url = options?.url || this.options.url;
@@ -67,8 +68,6 @@ export class Uhlive {
 
         this.pubsub = new Pubsub();
 
-        console.log("params", params);
-        console.log("options", options);
         this.socket = new phoenix.Socket(`${this.options.url}/socket`, {
             ...{ params },
             ...options,
