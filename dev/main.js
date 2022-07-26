@@ -1,27 +1,18 @@
 import Keycloak from "keycloak-js"
 import { Uhlive } from "@uhlive/javascript-sdk";
-import { identifier, url } from "./settings.js";
-
-console.log("url:", url)
-console.log("identifier:", identifier)
+import { uhliveConfig, keycloakConfig } from "./settings.js";
 
 window.onload = () => {
-  const keycloak = new Keycloak(
-    {
-      url: "https://staging-id.uh.live",
-      realm: "allo-media-api",
-      clientId: "showcase-staging"
-    }
-  );
+  const keycloak = new Keycloak(keycloakConfig);
   keycloak.init({
     onLoad: "login-required",
   }).then(function (authenticated) {
     if (authenticated) {
-      keycloak.loadUserProfile().then((user) => console.log("user:", user));
-
-      console.log("keycloak.token:", keycloak.token)
-
-      const uhlive = new Uhlive(identifier, keycloak.token, { url });
+      const uhlive = new Uhlive({
+        identifier: keycloak.tokenParsed.azp,
+        jwtToken: keycloak.token,
+        url: uhliveConfig.url
+      });
 
       document.getElementById("connect").addEventListener("click", () => {
         uhlive.connect();

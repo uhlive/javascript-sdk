@@ -2,11 +2,11 @@ import * as phoenix from "phoenix";
 import Pubsub from "./common/pubsub";
 import { Conversation } from "./conversation";
 import { ConversationOptions } from "./types/conversation";
-import { UhliveOptions } from "./types/uhlive";
+import { UhliveConfig, UhliveOptions } from "./types/uhlive";
 
 export class Uhlive {
     private conversation: Conversation | null = null;
-    private identifier: string;
+    private identifier: string = "";
     private options: UhliveOptions = {
         timeout: 3,
         url: "wss://api.uh.live",
@@ -15,7 +15,17 @@ export class Uhlive {
     private socket: phoenix.Socket;
 
     /**
-     * Create an Uhlive instance by passing your private token and identifier.
+     * Create an Uhlive instance.
+     * You can authenticate via two different methods:
+     * - a JWT token
+     * - *(deprecated)* an identifier and a token
+     *
+     * @example
+     * ```js
+     * const uhlive = new Uhlive("my-token", {
+     *   timeout: 3,
+     * });
+     * ```
      *
      * @example
      * ```js
@@ -24,23 +34,41 @@ export class Uhlive {
      * });
      * ```
      */
-    constructor(identifier: string, token: string, options?: UhliveOptions) {
-        this.identifier = identifier || "";
-        this.options.url = options?.url || this.options.url;
+    constructor(options: UhliveConfig);
+    constructor(identifier: string, token: string, options?: UhliveOptions);
+    constructor(...args: any[]) {
+        let options: UhliveOptions = {};
+        let params = {};
+
+        // Manage legacy authentication and JWT authentication
+        if (args.length === 1) {
+            options = args[0] as UhliveConfig;
+            this.options.url = options?.url || this.options.url;
+            this.options.timeout = options?.timeout || this.options.timeout;
+            this.identifier = args[0].identifier;
+            params = {
+                ...{ timeout: this.options.timeout },
+                ...{ jwt: args[0].jwtToken },
+            };
+        } else {
+            console.warn("You're using a deprecated auth method, please authenticate with a JWT token.");
+
+            options = args[2] as UhliveOptions;
+            this.options.url = options?.url || this.options.url;
+            this.options.timeout = options?.timeout || this.options.timeout;
+            this.identifier = args[0];
+            params = {
+                ...{ timeout: this.options.timeout },
+                ...{ token: args[1] },
+            };
+        }
         delete options?.url;
-        this.options.timeout = options?.timeout || this.options.timeout;
         delete options?.timeout;
 
         this.pubsub = new Pubsub();
 
-        let params = {
-            timeout: this.options.timeout,
-        };
-
-        params = token.startsWith("SFMyNTY") // There's propably a better check to do here
-            ? { ...params, ...{ token: token } }
-            : { ...params, ...{ jwt: token } };
-
+        console.log("params", params);
+        console.log("options", options);
         this.socket = new phoenix.Socket(`${this.options.url}/socket`, {
             ...{ params },
             ...options,
