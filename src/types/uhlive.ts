@@ -14,3 +14,8 @@ export interface UhliveOptions {
      */
     url?: string;
 }
+
+export interface UhliveConfig extends UhliveOptions {
+    identifier: string;
+    jwtToken: string;
+}

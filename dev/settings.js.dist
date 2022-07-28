@@ -1,2 +1,8 @@
-export const identifier = "YOUR-IDENTIFIER";
-export const token = "YOUR-TOKEN";
+export const uhliveConfig = {
+    url: "wss://preprod-api.uh.live",
+};
+export const keycloakConfig = {
+    url: "https://staging-id.uh.live",
+    realm: "allo-media-api",
+    clientId: "YOUR-CLIENT-ID",
+};
