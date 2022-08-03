@@ -11,6 +11,6 @@
   },
   "dependencies": {
     "@uhlive/javascript-sdk": "^0.18.0",
-    "keycloak-js": "^18.0.1"
+    "keycloak-js": "^17.0.1"
   }
 }

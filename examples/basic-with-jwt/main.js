@@ -6,6 +6,7 @@ window.onload = () => {
     const keycloak = new Keycloak(keycloakConfig);
     keycloak.init({
         onLoad: "login-required",
+        checkLoginIframe: false,
     }).then(function (authenticated) {
         if (authenticated) {
             const uhlive = new Uhlive({
