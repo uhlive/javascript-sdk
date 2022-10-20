@@ -43,6 +43,7 @@ echo "### Commit and tag release"
 npm version "$NEW_VERSION" --git-tag-version=false
 git add .
 git commit -m "Release v$NEW_VERSION"
+git tag -a "v$NEW_VERSION"
 
 echo "### Push to remote"
 git push && git push --tags
