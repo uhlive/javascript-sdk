@@ -1,5 +1,0 @@
-export const keycloakConfig = {
-    url: "https://id.uh.live",
-    realm: "allo-media-production",
-    clientId: "YOUR-CLIENT-ID",
-};
