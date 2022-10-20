@@ -1,2 +1,5 @@
-export const identifier = "YOUR-IDENTIFIER";
-export const token = "YOUR-TOKEN";
+export const keycloakConfig = {
+    url: "https://id.uh.live",
+    realm: "YOUR-REALM",
+    clientId: "YOUR-CLIENT-ID",
+};
