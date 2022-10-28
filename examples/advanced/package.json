@@ -10,7 +10,7 @@
     "vite": "^2.7.2"
   },
   "dependencies": {
-    "@uhlive/javascript-sdk": "^0.19.1",
+    "@uhlive/javascript-sdk": "^0.19.2",
     "keycloak-js": "^17.0.1"
   }
 }
