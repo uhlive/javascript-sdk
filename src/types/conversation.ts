@@ -310,6 +310,10 @@ export interface SegmentDecoded extends Decoding {
 
 export interface SegmentNormalized extends Decoding {
     /**
+     * Country where the speaker is (2 letters ISO 3166-1 code).
+     */
+    country: string;
+    /**
      * Speech language. 2 letter ISO code.
      */
     lang: string;
