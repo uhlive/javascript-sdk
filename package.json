@@ -1,6 +1,6 @@
 {
   "name": "@uhlive/javascript-sdk",
-  "version": "0.19.3",
+  "version": "0.19.3-dev",
   "description": "JavaScript SDK for convenient access to the uh!ive API",
   "author": {
     "name": "Allo-Media",
