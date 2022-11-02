@@ -366,6 +366,7 @@ export type {
     EntityAnnotation,
     SegmentDecoded,
     SegmentDecodedWord,
+    SegmentNormalized,
     SpeakerJoined,
     SpeakerLeft,
     WordsDecoded,
