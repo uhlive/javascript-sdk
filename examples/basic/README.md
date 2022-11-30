@@ -16,7 +16,7 @@ uhlive
 Try the example with:
 
 ```text
-npm ci
+npm install
 npm run dev
 ```
 
