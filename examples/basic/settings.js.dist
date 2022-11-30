@@ -3,7 +3,3 @@ export const keycloakConfig = {
     realm: "YOUR-REALM",
     clientId: "YOUR-CLIENT-ID",
 };
-
-export const uhliveConfig = {
-  url: "wss://api.uh.live",
-}

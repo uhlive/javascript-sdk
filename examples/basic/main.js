@@ -1,6 +1,6 @@
 import Keycloak from "keycloak-js"
 import { Uhlive } from "@uhlive/javascript-sdk";
-import { uhliveConfig, keycloakConfig } from "./settings.js";
+import { keycloakConfig } from "./settings.js";
 
 window.onload = () => {
     const keycloak = new Keycloak(keycloakConfig);
