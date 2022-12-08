@@ -17,7 +17,6 @@ window.onload = () => {
             const uhlive = new Uhlive({
                 identifier: keycloak.tokenParsed.azp,
                 jwtToken: keycloak.token,
-                url: uhliveConfig.url
             });
             uhlive
                 .connect()
