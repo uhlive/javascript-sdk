@@ -6,8 +6,8 @@ export class AudioSource {
     private audioInterval = 250;
     private audioSendInterval!: number;
     private audioSourceConstraints: MediaStreamConstraints = { audio: true };
-    private recorder!: Recorder | null;
     private channel: Phoenix.Channel;
+    private recorder!: Recorder | null;
     private socket: Phoenix.Socket;
 
     constructor(channel: Phoenix.Channel, socket: Phoenix.Socket) {
@@ -15,8 +15,30 @@ export class AudioSource {
         this.socket = socket;
     }
 
+    /**
+     * Get the recording status of the conversation.
+     *
+     * @category Recording
+     * @example
+     * ```javascript
+     * const uhlive = new Uhlive("my-token");
+     * uhlive
+     *     .join("my-conversation")
+     *     .isRecording(); // true
+     * ```
+     * @example
+     * ```js
+     * const uhlive = new Uhlive("my-token");
+     * uhlive
+     *     .join("my-conversation", {readonly: true})
+     *     .isRecording(); // false
+     * ```
+     */
+    public isRecording(): boolean {
+        return Boolean(this.recorder);
+    }
+
     public async startRecording() {
-        console.log("Recording audio");
         let stream: MediaStream;
         try {
             stream = await this.askForPermissions();
@@ -50,48 +72,39 @@ export class AudioSource {
     }
 
     public startRecordingIncoming() {
-        console.log("Recording incoming audio");
         return navigator.mediaDevices
-        .getDisplayMedia({video: true, audio: true})
-        .then((stream) => {
-            try {
-                this.audioContext = new AudioContext();
-                this.audioContext.resume();
+            .getDisplayMedia({ audio: true, video: true })
+            .then((stream) => {
+                try {
+                    this.audioContext = new AudioContext();
+                    this.audioContext.resume();
 
-                const input = this.audioContext.createMediaStreamSource(stream);
-                input.connect(this.audioContext.createAnalyser());
+                    const input = this.audioContext.createMediaStreamSource(
+                        stream,
+                    );
+                    input.connect(this.audioContext.createAnalyser());
 
-                this.recorder = new Recorder(input);
+                    this.recorder = new Recorder(input);
 
-                this.audioSendInterval = window.setInterval(() => {
-                    if (this.recorder) {
-                        this.recorder.exportAudio((blob: Blob) => {
-                            this.socketSend(blob);
-                            this.recorder!.clear();
-                        }, "audio/x-raw");
-                    }
-                }, this.audioInterval);
-                this.recorder.record();
-            } catch (e) {
-                throw new Error("Error initializing Web Audio browser: " + e);
-            }
-        })
-        .catch((err) => {
-          console.error(err);
-          return null;
-        });
-    }
-
-    private askForPermissions(): Promise<any> {
-        if (navigator.mediaDevices.getUserMedia) {
-            return navigator.mediaDevices.getUserMedia(
-                this.audioSourceConstraints,
-            );
-        } else {
-            return new Promise((reject) => {
-                reject(new Error("No user media support"));
+                    this.audioSendInterval = window.setInterval(() => {
+                        if (this.recorder) {
+                            this.recorder.exportAudio((blob: Blob) => {
+                                this.socketSend(blob);
+                                this.recorder!.clear();
+                            }, "audio/x-raw");
+                        }
+                    }, this.audioInterval);
+                    this.recorder.record();
+                } catch (e) {
+                    throw new Error(
+                        "Error initializing Web Audio browser: " + e,
+                    );
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+                return null;
             });
-        }
     }
 
     public stopRecording(): AudioSource | null {
@@ -110,27 +123,24 @@ export class AudioSource {
         return null;
     }
 
-    /**
-     * Get the recording status of the conversation.
-     *
-     * @category Recording
-     * @example
-     * ```javascript
-     * const uhlive = new Uhlive("my-token");
-     * uhlive
-     *     .join("my-conversation")
-     *     .isRecording(); // true
-     * ```
-     * @example
-     * ```js
-     * const uhlive = new Uhlive("my-token");
-     * uhlive
-     *     .join("my-conversation", {readonly: true})
-     *     .isRecording(); // false
-     * ```
-     */
-    public isRecording(): boolean {
-        return Boolean(this.recorder);
+    private askForPermissions(): Promise<any> {
+        if (navigator.mediaDevices.getUserMedia) {
+            return navigator.mediaDevices.getUserMedia(
+                this.audioSourceConstraints,
+            );
+        } else {
+            return new Promise((reject) => {
+                reject(new Error("No user media support"));
+            });
+        }
+    }
+
+    private sendMessage(event: string, payload = {}): void {
+        this.channel
+            .push(event, payload)
+            .receive("error", (data: any) =>
+                console.error("response ERROR", data),
+            );
     }
 
     private socketSend(item: Blob | string) {
@@ -156,13 +166,5 @@ export class AudioSource {
                 console.error(`Socket is not in "open" state`);
             }
         }
-    }
-
-    private sendMessage(event: string, payload = {}): void {
-        this.channel
-            .push(event, payload)
-            .receive("error", (data: any) =>
-                console.error("response ERROR", data),
-            );
     }
 }

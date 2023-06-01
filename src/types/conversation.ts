@@ -45,7 +45,7 @@ export enum EntitiesRelationEvent {
  */
 export interface ConversationOptions {
     /**
-     * Capture audio incoming from speakers
+     * Capture audio incoming from speakers.
      */
     captureIncomingAudio: boolean;
     /**

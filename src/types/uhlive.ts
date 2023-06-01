@@ -3,7 +3,7 @@
  */
 export interface UhliveOptions {
     /**
-     * Capture audio incoming from speakers
+     * Capture audio incoming from speakers.
      */
     captureIncomingAudio?: boolean;
     /**

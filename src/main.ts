@@ -8,9 +8,9 @@ export class Uhlive {
     private conversation: Conversation | null = null;
     private identifier: string = "";
     private options: UhliveOptions = {
+        captureIncomingAudio: false,
         timeout: 3,
         url: "wss://api.uh.live",
-        captureIncomingAudio: false,
     };
     private pubsub: Pubsub;
     private socket: phoenix.Socket;
@@ -45,7 +45,9 @@ export class Uhlive {
             options = args[0] as UhliveConfig;
             this.options.url = options?.url || this.options.url;
             this.options.timeout = options?.timeout || this.options.timeout;
-            this.options.captureIncomingAudio = options?.captureIncomingAudio || this.options.captureIncomingAudio;
+            this.options.captureIncomingAudio =
+                options?.captureIncomingAudio ||
+                this.options.captureIncomingAudio;
             this.identifier = args[0].identifier;
             params = {
                 ...{ timeout: this.options.timeout },
@@ -231,21 +233,14 @@ export class Uhlive {
 
         this.conversation = conversation;
 
-        console.log("this.options:", this.options);
         if (this.options.captureIncomingAudio) {
-            console.log("Capture incoming audio");
-            new Conversation(
-                conversationId,
-                this.identifier,
-                this.socket,
-                {
-                    ...newOptions,
-                    ...{
-                        speaker: "incoming",
-                        captureIncomingAudio: true,
-                    }
-                }
-            );
+            new Conversation(conversationId, this.identifier, this.socket, {
+                ...newOptions,
+                ...{
+                    captureIncomingAudio: true,
+                    speaker: "incoming",
+                },
+            });
         }
 
         return conversation;
@@ -390,5 +385,5 @@ export type {
     SegmentNormalized,
     SpeakerJoined,
     SpeakerLeft,
-    WordsDecoded
+    WordsDecoded,
 } from "./types/conversation";

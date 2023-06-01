@@ -42,7 +42,6 @@ export class Conversation {
         socket: Phoenix.Socket,
         options: Required<ConversationOptions>,
     ) {
-        console.log("New conversation:", conversationId, options.speaker, options.captureIncomingAudio);
         this.conversationId = conversationId;
         this.socket = socket;
         this.speaker = options.speaker;
