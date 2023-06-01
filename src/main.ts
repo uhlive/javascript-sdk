@@ -10,6 +10,7 @@ export class Uhlive {
     private options: UhliveOptions = {
         timeout: 3,
         url: "wss://api.uh.live",
+        captureIncomingAudio: false,
     };
     private pubsub: Pubsub;
     private socket: phoenix.Socket;
@@ -44,6 +45,7 @@ export class Uhlive {
             options = args[0] as UhliveConfig;
             this.options.url = options?.url || this.options.url;
             this.options.timeout = options?.timeout || this.options.timeout;
+            this.options.captureIncomingAudio = options?.captureIncomingAudio || this.options.captureIncomingAudio;
             this.identifier = args[0].identifier;
             params = {
                 ...{ timeout: this.options.timeout },
@@ -183,6 +185,7 @@ export class Uhlive {
     public join(
         conversationId: string,
         options: ConversationOptions = {
+            captureIncomingAudio: false,
             country: this.getCountryFromBrowser(),
             ignoreDecodingEvents: [],
             ignoreEntities: [],
@@ -196,6 +199,7 @@ export class Uhlive {
         },
     ): Conversation {
         const defaultValues: Required<ConversationOptions> = {
+            captureIncomingAudio: false,
             country: this.getCountryFromBrowser(),
             ignoreDecodingEvents: [],
             ignoreEntities: [],
@@ -226,6 +230,24 @@ export class Uhlive {
         );
 
         this.conversation = conversation;
+
+        console.log("this.options:", this.options);
+        if (this.options.captureIncomingAudio) {
+            console.log("Capture incoming audio");
+            new Conversation(
+                conversationId,
+                this.identifier,
+                this.socket,
+                {
+                    ...newOptions,
+                    ...{
+                        speaker: "incoming",
+                        captureIncomingAudio: true,
+                    }
+                }
+            );
+        }
+
         return conversation;
     }
 
@@ -359,7 +381,6 @@ export class Uhlive {
 }
 
 export { DecodingEvent, EntityEvent } from "./types/conversation";
-
 export type {
     ConversationOptions,
     Entity,
@@ -369,5 +390,5 @@ export type {
     SegmentNormalized,
     SpeakerJoined,
     SpeakerLeft,
-    WordsDecoded,
+    WordsDecoded
 } from "./types/conversation";

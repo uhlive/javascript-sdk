@@ -1,6 +1,7 @@
 import * as Phoenix from "phoenix";
+import { AudioSource } from "./audio";
 import Pubsub from "./common/pubsub";
-import Recorder from "./recorder";
+// import Recorder from "./recorder";
 import {
     ConversationOptions,
     DecodingEvent,
@@ -18,17 +19,13 @@ import {
 } from "./types/conversation";
 
 export class Conversation {
-    private audioContext: AudioContext | undefined;
-    private audioInterval = 250;
-    private audioSendInterval!: number;
-    private audioSourceConstraints: MediaStreamConstraints = { audio: true };
+    private audio: AudioSource;
     private channel: Phoenix.Channel;
     private conversationId: string;
     public static readonly defaultCountry = "us";
     public static readonly defaultModel = "en";
     private messageList: WordsDecoded[] | SegmentDecoded[] = [];
     private pubsub: Pubsub;
-    private recorder!: Recorder | null;
     private socket: Phoenix.Socket;
     public readonly speaker: string;
     private speakerList: string[] = [];
@@ -45,6 +42,7 @@ export class Conversation {
         socket: Phoenix.Socket,
         options: Required<ConversationOptions>,
     ) {
+        console.log("New conversation:", conversationId, options.speaker, options.captureIncomingAudio);
         this.conversationId = conversationId;
         this.socket = socket;
         this.speaker = options.speaker;
@@ -110,8 +108,13 @@ export class Conversation {
             this.pubsub.publish("error", reason);
         });
 
+        this.audio = new AudioSource(this.channel, this.socket);
         if (!options.readonly) {
-            this.startRecording();
+            if (options.captureIncomingAudio) {
+                this.audio.startRecordingIncoming();
+            } else {
+                this.audio.startRecording();
+            }
         }
     }
 
@@ -129,35 +132,12 @@ export class Conversation {
     }
 
     /**
-     * Get the recording status of the conversation.
-     *
-     * @category Recording
-     * @example
-     * ```javascript
-     * const uhlive = new Uhlive("my-token");
-     * uhlive
-     *     .join("my-conversation")
-     *     .isRecording(); // true
-     * ```
-     * @example
-     * ```js
-     * const uhlive = new Uhlive("my-token");
-     * uhlive
-     *     .join("my-conversation", {readonly: true})
-     *     .isRecording(); // false
-     * ```
-     */
-    public isRecording(): boolean {
-        return Boolean(this.recorder);
-    }
-
-    /**
      * @ignore
      */
     public leave(): Promise<void> {
         return new Promise<void>((resolve) => {
-            if (this.isRecording()) {
-                this.stopRecording();
+            if (this.audio.isRecording()) {
+                this.audio.stopRecording();
             }
             this.pubsub.subscribe(`speaker_left`, (payload) => {
                 if (payload.speaker === this.speaker) {
@@ -513,18 +493,6 @@ export class Conversation {
         }
     }
 
-    private askForPermissions(): Promise<any> {
-        if (navigator.mediaDevices.getUserMedia) {
-            return navigator.mediaDevices.getUserMedia(
-                this.audioSourceConstraints,
-            );
-        } else {
-            return new Promise((reject) => {
-                reject(new Error("No user media support"));
-            });
-        }
-    }
-
     private listenToEntityEvents(eventsToIgnore: EntityEvent[]) {
         Object.values(EntityEvent).forEach((entityName) => {
             if (!eventsToIgnore.includes(entityName)) {
@@ -536,88 +504,6 @@ export class Conversation {
                 });
             }
         });
-    }
-
-    private sendMessage(event: string, payload = {}): void {
-        this.channel
-            .push(event, payload)
-            .receive("error", (data: any) =>
-                console.error("response ERROR", data),
-            );
-    }
-
-    private socketSend(item: Blob | string) {
-        if (this.socket) {
-            const state = this.socket.connectionState();
-            if (state == "open") {
-                // If item is an audio blob
-                if (item instanceof Blob) {
-                    if (item.size > 0) {
-                        const reader = new FileReader();
-                        reader.readAsDataURL(item);
-                        reader.onloadend = () => {
-                            this.sendMessage("audio_chunk", {
-                                blob: (reader.result as string).replace(
-                                    "data:audio/x-raw;base64,",
-                                    "",
-                                ),
-                            });
-                        };
-                    }
-                }
-            } else {
-                console.error(`Socket is not in "open" state`);
-            }
-        }
-    }
-
-    private async startRecording() {
-        let stream: MediaStream;
-        try {
-            stream = await this.askForPermissions();
-        } catch (e) {
-            throw new Error(
-                "Impossible to get permission to access microphone: " + e,
-            );
-        }
-
-        try {
-            this.audioContext = new AudioContext();
-            this.audioContext.resume();
-
-            const input = this.audioContext.createMediaStreamSource(stream);
-            input.connect(this.audioContext.createAnalyser());
-
-            this.recorder = new Recorder(input);
-
-            this.audioSendInterval = window.setInterval(() => {
-                if (this.recorder) {
-                    this.recorder.exportAudio((blob: Blob) => {
-                        this.socketSend(blob);
-                        this.recorder!.clear();
-                    }, "audio/x-raw");
-                }
-            }, this.audioInterval);
-            this.recorder.record();
-        } catch (e) {
-            throw new Error("Error initializing Web Audio browser: " + e);
-        }
-    }
-
-    private stopRecording(): Conversation | null {
-        if (this.isRecording()) {
-            clearInterval(this.audioSendInterval);
-            this.recorder!.stop();
-            this.recorder!.clear();
-            this.recorder!.exportAudio((blob: Blob) => {
-                this.socketSend(blob);
-                this.recorder!.clear();
-                this.recorder = null;
-            }, "audio/x-raw");
-            return this;
-        }
-        console.warn("You must start to record before being able to stop.");
-        return null;
     }
 
     private validateConstructorParameters(

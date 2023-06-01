@@ -3,6 +3,10 @@
  */
 export interface UhliveOptions {
     /**
+     * Capture audio incoming from speakers
+     */
+    captureIncomingAudio?: boolean;
+    /**
      * The delay until disconnection, in seconds.
      */
     timeout?: number;

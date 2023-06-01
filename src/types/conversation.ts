@@ -45,6 +45,10 @@ export enum EntitiesRelationEvent {
  */
 export interface ConversationOptions {
     /**
+     * Capture audio incoming from speakers
+     */
+    captureIncomingAudio: boolean;
+    /**
      * Specify which country will be used to interpret certain entities.
      */
     country?: string;
