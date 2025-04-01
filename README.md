@@ -21,7 +21,7 @@ Note that you must have a token and an identifier to use this package.
 
 ### Installation
 
-```text
+```bash
 npm install @uhlive/javascript-sdk
 ```
 
@@ -43,7 +43,7 @@ Note that you **must** create a `settings.js` file, based on
 
 Start the example:
 
-```text
+```bash
 cd ./examples/basic/
 npm i
 npm run dev
@@ -65,6 +65,6 @@ for technical details.
 
 ## Tests
 
-```text
+```bash
 npm test
 ```

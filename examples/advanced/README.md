@@ -1,10 +1,12 @@
 # uhlive-example-advanced
 
-This example loads the `@uhlive/javascript-sdk` package and let you decide when to start listening. It also doesn't inject the transcript in the DOM, but let you decide what to do with it.
+This example loads the `@uhlive/javascript-sdk` package and let you decide when
+to start listening. It also doesn't inject the transcript in the DOM, but let
+you decide what to do with it.
 
 Try the example with:
 
-```text
+```bash
 npm ci
 npm run dev
 ```
