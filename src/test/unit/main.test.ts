@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import * as Phoenix from "phoenix";
 import { Conversation } from "../../conversation";
 import { Uhlive } from "../../main";

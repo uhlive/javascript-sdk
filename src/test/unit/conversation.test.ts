@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import * as Phoenix from "phoenix";
 import { Conversation } from "../../conversation";
 import { EntityEvent, EntitiesRelationEvent } from "../../types/conversation";
