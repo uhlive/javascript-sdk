@@ -9,8 +9,7 @@
   },
   "license": "MIT",
   "engines": {
-    "node": "^16.13.1",
-    "npm": "^8.1.2"
+    "node": "^18.19.1"
   },
   "main": "dist/main.cjs.js",
   "module": "dist/main.esm.js",
