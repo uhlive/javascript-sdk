@@ -4,7 +4,7 @@ version: 2.1
 defaults: &defaults
     working_directory: ~/js-sdk
     docker:
-      - image: cimg/node:16.13.1
+      - image: cimg/node:18.19.1
 
 commands:
   install-dependencies:
