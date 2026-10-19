@@ -7,7 +7,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^2.7.2"
+    "vite": "^8.3.4"
   },
   "dependencies": {
     "@uhlive/javascript-sdk": "^1.0.0-rc1",
